@@ -9,18 +9,19 @@
 
 from steem.steem import Steem
 from steem.steem import BroadcastingError
+from steemapi.steemnoderpc import SteemNodeRPC
 import threading
 import time
 import random
 import csv
 
 # Default percent upvote and favorite percent upvote
-percent_upvote = 3;
+percent_upvote = 4;
 fav_percent_upvote = 100;
 
 # This is the range (in seconds) in which your bot will cast a vote
-# Default numbers are a 9 to 14 minute range
-vote_delay = random.randrange(540,840)
+# Default numbers are a 30seconds to 15 minute range
+vote_delay = random.randrange(120,900)
 
 # 0 disables tipping, 1 enables tipping (for favorite authors only)
 tipping = 0
@@ -32,7 +33,8 @@ tip_amount = 0.001
 top_writers = []
 
 # add my favorites
-my_favorites = ["thebatchman"]
+my_favorites = []
+
 
 # Skiplist functionality has not been added yet, this will be your personal blacklist
 with open('skiplist.txt', mode='r') as infile:
@@ -59,6 +61,25 @@ def list_load(listfile):
 # Same goes for the post_wif.txt file or the active_wif.txt file.
 account = list_load("accounts.txt")
 
+# begin finding who we follow 
+# start call to SteemNodeRPC
+class FollowMe(object):
+    def __init__(self):
+        self.rpc = SteemNodeRPC("wss://node.steem.ws", "", "", apis=["follow"])
+
+    # get who we follow
+    def following(self,account):
+        return  [ f['following'] for f in self.rpc.get_following(account, "", "blog", 100, api="follow") ]
+
+    
+
+# call FollowMe
+f = FollowMe()
+# set the iamfollowinglist
+iamfollowing = f.following(account[0])
+#print iamfollowing to see if it got anything. Comment out if you don't want to see this
+#print("followers %s" % iamfollowing)
+
 # Checks if tipping is enabled and loads the correct key file
 if not tipping:
     posting_key = list_load("post_wif.txt")
@@ -67,7 +88,9 @@ else:
 
 upvote_history = []
 
-my_subscriptions = top_writers + my_favorites
+my_subscriptions = top_writers + my_favorites + iamfollowing
+# add to my favorites
+my_favorites = my_favorites + iamfollowing
 
 def feed():
 
@@ -75,6 +98,11 @@ def feed():
     print("Upvote Bot Started - Waiting for New Posts to Upvote!")
 
     steem = Steem(wif=posting_key[0])
+
+    # Look for  who we follow
+    
+
+    # loop through the comments
     for comment in steem.stream_comments():
 
         if True:
