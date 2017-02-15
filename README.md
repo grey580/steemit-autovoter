@@ -6,9 +6,9 @@ This Piston/Python-Bot will vote for everyone who post except those flagged by @
 
 Created by @furion, @contentjunkie, @anyx, @inertia, @fyrstikken
 
-This version is from @thebatchman
+This version is forked from @thebatchman by @grey580 with his modifications
 
 
 # Requirements:
 - Python 3+
-- [Piston](https://github.com/xeroc/piston)
+- Python Steem: please use version 0.3.1 (pip3 install steem=0.3.1)
