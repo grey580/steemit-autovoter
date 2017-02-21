@@ -70,6 +70,7 @@ class FollowMe(object):
     # get who we follow
     def following(self,account):
         return  [ f['following'] for f in self.rpc.get_following(account, "", "blog", 100, api="follow") ]
+    # self.rpc.get_account
 
     
 
