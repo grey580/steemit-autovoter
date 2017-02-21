@@ -70,7 +70,14 @@ class FollowMe(object):
     # get who we follow
     def following(self,account):
         return  [ f['following'] for f in self.rpc.get_following(account, "", "blog", 100, api="follow") ]
+
+    # tentative function
     # self.rpc.get_account
+    #d = self.rpc.get_account(self.name)
+        #if 'voting_power' not in d.keys():
+            #msg = 'Invalid get_accounts() response: %s' % d
+            #self.logger.error(msg)
+            #raise Exception(msg)
 
     
 
